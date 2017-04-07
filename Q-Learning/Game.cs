@@ -123,5 +123,12 @@ namespace Q_Learning
         protected void setGenerationInTitle(int generationN) {
             Title = "Q-Learning Experiment Lab - Generation #" + generationN;
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            agent.stopBrain();
+        }
     }
 }

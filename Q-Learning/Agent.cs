@@ -13,6 +13,7 @@ namespace Q_Learning
         protected double radius, position_x, position_y, learning_rate;
         protected Matrix Q;
         protected LabSpace lab;
+        protected Thread brain;
 
         public Agent(int position_x, int position_y, double learning_rate, LabSpace lab, double radius = .25) {
             this.position_x = position_x;
@@ -27,11 +28,11 @@ namespace Q_Learning
             // Set lab in which agent have to learn
             this.lab = lab;
 
-            // Start Q matrix as zero matrix
-            Q = new Matrix();
+            // Start Q matrix as zero matrix - QI = 1x1 matrix
+            Q = new Matrix(1);
 
             // Start async brain operations
-            Thread brain = new Thread(new ThreadStart(brainWorker));
+            brain = new Thread(new ThreadStart(brainWorker));
             brain.Start();
         }
 
@@ -108,6 +109,10 @@ namespace Q_Learning
         public void interact()
         {
             // TODO
+        }
+
+        public void stopBrain() {
+            brain.Abort();
         }
 
         //Q.increaseMatrix();
