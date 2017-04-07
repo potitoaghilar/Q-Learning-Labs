@@ -28,7 +28,7 @@ namespace Q_Learning
         public static void asyncOperations() {
 
             // Rectangle of the workspace
-            int x = 0, y = 0, width = 20, height = 15;
+            int x = 0, y = 0, width = 5, height = 3;
 
             // Draw lab
             game.drawLabWalls(x, y, width, height, Color.Black);

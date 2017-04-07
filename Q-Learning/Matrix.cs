@@ -51,5 +51,19 @@ namespace Q_Learning
             matrix = tempMatrix;
         }
 
+        public void setValue(int x, int y, double value)
+        {
+            matrix[x][y] = value;
+        }
+        public double getValue(int x, int y)
+        {
+            return matrix[x][y];
+        }
+
+        public int getLength()
+        {
+            return matrix.Length;
+        }
+
     }
 }

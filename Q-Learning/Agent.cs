@@ -12,10 +12,11 @@ namespace Q_Learning
     {
         protected double radius, position_x, position_y, learning_rate;
         protected Matrix Q;
+        protected Game game;
         protected LabSpace lab;
         protected Thread brain;
 
-        public Agent(int position_x, int position_y, double learning_rate, LabSpace lab, double radius = .25) {
+        public Agent(int position_x, int position_y, double learning_rate, LabSpace lab, Game game, double radius = .25) {
             this.position_x = position_x;
             this.position_y = position_y;
             this.radius = radius;
@@ -25,11 +26,14 @@ namespace Q_Learning
             if (learning_rate > .99) learning_rate = .99;
             this.learning_rate = learning_rate;
 
+            // Set game instance
+            this.game = game;
+
             // Set lab in which agent have to learn
             this.lab = lab;
 
-            // Start Q matrix as zero matrix - QI = 1x1 matrix
-            Q = new Matrix(1);
+            // Start Q matrix as zero matrix
+            Q = new Matrix(game.getR().getLength());
 
             // Start async brain operations
             brain = new Thread(new ThreadStart(brainWorker));
@@ -66,13 +70,47 @@ namespace Q_Learning
             bool brainActive = true;
             while (brainActive) {
 
+                // Get current pos
+                int currY = lab.height - (int)position_y - 1, currX = (int)position_x - lab.x - 1;
+                /*int temp = currStateRow;
+                for (int i = 0; i < temp; i++) {
+                    currStateRow += lab.width - 1;
+                }*/
+
                 // TODO
                 Array actionsArray = Enum.GetValues(typeof(actions));
                 actions action = (actions)actionsArray.GetValue((new Random()).Next(actionsArray.Length));
                 GetType().GetMethod(action.ToString()).Invoke(this, null);
 
+                // Get next pos
+                int nextY = (lab.height - (int)position_y - 1), nextX = (int)position_x - lab.x - 1;
+
+                // Has walked -> go on
+                if (currY != nextY || currX != nextX) {
+
+                    // Calculate matrix row
+                    int row = 0;
+                    for (int i = 0; i < currY; i++)
+                        row += lab.width - 1;
+                    row += currX;
+                    // Calculate matrix column
+                    int column = 0;
+                    for (int i = 0; i < nextY; i++)
+                        column += lab.width - 1;
+                    column += nextX;
+                    // Update Q
+                    Q.setValue(row, column, 1);
+
+                }
+
                 Thread.Sleep(100);
 
+                // If agent reaches the goal stop brain
+                if (position_x == lab.x + lab.width - 1 && position_y == lab.y + lab.height - 1)
+                {
+                    game.newGeneration();
+                    brainActive = false;
+                }
             }
 
         }
@@ -82,8 +120,7 @@ namespace Q_Learning
             moveUp,
             moveDown,
             moveLeft,
-            moveRight,
-            interact
+            moveRight
         }
         // Agent possible actions methods
         public void moveUp()
@@ -106,16 +143,19 @@ namespace Q_Learning
             if (position_x < lab.x + lab.width - 1)
                 position_x++;
         }
-        public void interact()
-        {
-            // TODO
-        }
 
         public void stopBrain() {
             brain.Abort();
         }
 
-        //Q.increaseMatrix();
+        public void setQ(Matrix Q)
+        {
+            this.Q = Q;
+        }
+        public Matrix getQ()
+        {
+            return Q;
+        }
 
     }
 }

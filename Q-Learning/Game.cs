@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
 using OpenTK.Graphics;
+using System.Drawing;
 
 namespace Q_Learning
 {
@@ -18,15 +18,12 @@ namespace Q_Learning
         protected LabSpace lab;
         protected Agent agent;
         protected Matrix R;
+        protected Random random = new Random();
 
         public Game(int width, int height) : base(width, height, new GraphicsMode(32, 24, 0, 4))
         {
             setGenerationInTitle(generationN);
             this.aspectRatio = (double)width / height;
-
-            // Start R matrix - direct rewards matrix
-            R = new Matrix(5);
-            // TODO
         }
 
         protected override void OnLoad(EventArgs e)
@@ -50,6 +47,8 @@ namespace Q_Learning
 
             if (lab != null) drawLabWallsHelper(lab.x, lab.y, lab.width, lab.height, lab.color);
             if (agent != null) drawAgent();
+
+            drawReward();
             
             this.SwapBuffers();
 
@@ -58,14 +57,30 @@ namespace Q_Learning
         // PUBLIC FUNCTIONS
         public void drawLabWalls(int x, int y, int width, int height, Color color) {
             lab = new LabSpace(x, y, width, height, color);
+
+            // Start R matrix - direct rewards matrix (top-right screen)
+            R = new Matrix((width - 1) * (height - 1));
+            R.setValue(width - 3, width - 2, 1);
+            R.setValue((width - 1) * 2 - 1, width - 2, 1);
         }
 
-        public void createAgent(int position_x, int position_y) {
-            agent = new Agent(position_x, position_y, .8, lab);
+        public void createAgent(int position_x, int position_y, double learningRate = .8) {
+            agent = new Agent(position_x, position_y, learningRate, lab, this);
+        }
+
+        public void newGeneration() {
+            Matrix Q = agent.getQ();
+            createAgent(random.Next(lab.x + 1, lab.width - 1), random.Next(lab.y + 1, lab.height - 1));
+            agent.setQ(Q);
+
+            setGenerationInTitle(++generationN);
+        }
+
+        public Matrix getR() {
+            return R;
         }
         // ---
-
-
+        
         // PROTECTED FUNCTIONS
         protected void drawLabWallsHelper(int x, int y, int width, int height, Color color) {
             GL.Color3(color);
@@ -117,6 +132,14 @@ namespace Q_Learning
             GL.Begin(PrimitiveType.Polygon);
             for(int i = 0; i < 360; i++)
                 GL.Vertex2(agent.getPositionX() + agent.getRadius() * Math.Cos(i * MyMath.DEG2RAD), agent.getPositionY() + agent.getRadius() * Math.Sin(i * MyMath.DEG2RAD));
+            GL.End();
+        }
+
+        protected void drawReward() {
+            GL.Color3(Color.Yellow);
+            GL.Begin(PrimitiveType.Polygon);
+            for (int i = 0; i < 360; i++)
+                GL.Vertex2(lab.x + lab.width - 1 + .6 * Math.Cos(i * MyMath.DEG2RAD), lab.y + lab.height - 1 + .6 * Math.Sin(i * MyMath.DEG2RAD));
             GL.End();
         }
 
