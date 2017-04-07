@@ -15,6 +15,7 @@ namespace Q_Learning
         protected Game game;
         protected LabSpace lab;
         protected Thread brain;
+        private Random random = new Random();
 
         public Agent(int position_x, int position_y, double learning_rate, LabSpace lab, Game game, double radius = .25) {
             this.position_x = position_x;
@@ -72,20 +73,17 @@ namespace Q_Learning
 
                 // Get current pos
                 int currY = lab.height - (int)position_y - 1, currX = (int)position_x - lab.x - 1;
-                /*int temp = currStateRow;
-                for (int i = 0; i < temp; i++) {
-                    currStateRow += lab.width - 1;
-                }*/
 
                 // TODO
+                int selectedAction = random.Next(4);
                 Array actionsArray = Enum.GetValues(typeof(actions));
-                actions action = (actions)actionsArray.GetValue((new Random()).Next(actionsArray.Length));
+                actions action = (actions)actionsArray.GetValue(selectedAction);
                 GetType().GetMethod(action.ToString()).Invoke(this, null);
 
                 // Get next pos
                 int nextY = (lab.height - (int)position_y - 1), nextX = (int)position_x - lab.x - 1;
 
-                // Has walked -> go on
+                // Angent changed position -> update Q
                 if (currY != nextY || currX != nextX) {
 
                     // Calculate matrix row
@@ -99,7 +97,7 @@ namespace Q_Learning
                         column += lab.width - 1;
                     column += nextX;
                     // Update Q
-                    Q.setValue(row, column, 1);
+                    Q.setValue(row, column, game.getR().getValue(row, column) + learning_rate * Q.getMaxFromRow(column));
 
                 }
 

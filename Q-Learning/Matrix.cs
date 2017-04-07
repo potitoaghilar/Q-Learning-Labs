@@ -65,5 +65,15 @@ namespace Q_Learning
             return matrix.Length;
         }
 
+        public double getMaxFromRow(int i)
+        {
+            return matrix[i].Max();
+        }
+
+        public double getSumOfRow(int i)
+        {
+            return matrix[i].Sum();
+        }
+
     }
 }

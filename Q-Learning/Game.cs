@@ -64,7 +64,7 @@ namespace Q_Learning
             R.setValue((width - 1) * 2 - 1, width - 2, 1);
         }
 
-        public void createAgent(int position_x, int position_y, double learningRate = .8) {
+        public void createAgent(int position_x, int position_y, double learningRate = .2) {
             agent = new Agent(position_x, position_y, learningRate, lab, this);
         }
 
