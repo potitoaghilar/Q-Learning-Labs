@@ -13,15 +13,20 @@ namespace Q_Learning
     // Experiment are in which everything is snapped to a unitary grid
     class Game : GameWindow
     {
-        protected int generationN = 0;
+        protected int generationN = 1;
         private double aspectRatio;
         protected LabSpace lab;
         protected Agent agent;
+        protected Matrix R;
 
-        public Game(int width, int height) : base(width, height, new GraphicsMode(32, 24, 0, 8))
+        public Game(int width, int height) : base(width, height, new GraphicsMode(32, 24, 0, 4))
         {
             setGenerationInTitle(generationN);
             this.aspectRatio = (double)width / height;
+
+            // Start R matrix - direct rewards matrix
+            R = new Matrix(5);
+            // TODO
         }
 
         protected override void OnLoad(EventArgs e)
@@ -56,7 +61,7 @@ namespace Q_Learning
         }
 
         public void createAgent(int position_x, int position_y) {
-            agent = new Agent(position_x, position_y);
+            agent = new Agent(position_x, position_y, .8, lab);
         }
         // ---
 
@@ -116,7 +121,7 @@ namespace Q_Learning
         }
 
         protected void setGenerationInTitle(int generationN) {
-            this.Title = "Q-Learning Experiment Lab - Generation #" + generationN;
+            Title = "Q-Learning Experiment Lab - Generation #" + generationN;
         }
     }
 }

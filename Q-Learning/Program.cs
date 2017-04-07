@@ -30,9 +30,9 @@ namespace Q_Learning
             // Rectangle of the workspace
             int x = 0, y = 0, width = 20, height = 15;
 
-            // Draw items in scene
+            // Draw lab
             game.drawLabWalls(x, y, width, height, Color.Black);
-            Thread.Sleep(300);
+            // Spawn agent in random position inside Lab
             game.createAgent(random.Next(x + 1, width - 1), random.Next(y + 1, height - 1));
 
         }
