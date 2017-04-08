@@ -64,20 +64,26 @@ namespace Q_Learning
             R.setValue((width - 1) * 2 - 1, width - 2, 1);
         }
 
-        public void createAgent(int position_x, int position_y, double learningRate = .2) {
-            agent = new Agent(position_x, position_y, learningRate, lab, this);
+        public void createAgent(int position_x, int position_y, double learningRate = .4, bool fastLearning = false) {
+            agent = new Agent(position_x, position_y, learningRate, lab, this, fastLearning);
         }
 
         public void newGeneration() {
-            Matrix Q = agent.getQ();
-            createAgent(random.Next(lab.x + 1, lab.width - 1), random.Next(lab.y + 1, lab.height - 1));
+            Matrix Q = agent.getQ(), A = agent.getA();
+            createAgent(random.Next(lab.x + 1, lab.width - 1), random.Next(lab.y + 1, lab.height - 1), agent.getLearningRate(), agent.getFastLearning());
             agent.setQ(Q);
+            agent.setA(A);
 
             setGenerationInTitle(++generationN);
         }
 
         public Matrix getR() {
             return R;
+        }
+
+        public int getGeneration()
+        {
+            return generationN;
         }
         // ---
         

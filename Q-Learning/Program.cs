@@ -28,12 +28,12 @@ namespace Q_Learning
         public static void asyncOperations() {
 
             // Rectangle of the workspace
-            int x = 0, y = 0, width = 5, height = 3;
+            int x = 0, y = 0, width = 20, height = 15;
 
             // Draw lab
             game.drawLabWalls(x, y, width, height, Color.Black);
             // Spawn agent in random position inside Lab
-            game.createAgent(random.Next(x + 1, width - 1), random.Next(y + 1, height - 1));
+            game.createAgent(random.Next(x + 1, width - 1), random.Next(y + 1, height - 1), .4, true);
 
         }
     }

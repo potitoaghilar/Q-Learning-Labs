@@ -75,5 +75,16 @@ namespace Q_Learning
             return matrix[i].Sum();
         }
 
+        public int[] getMaxValueArrayFromRow(int i)
+        {
+            double maxValue = matrix[i].Max();
+            if (maxValue <= 0) return new int[] { };
+            List<int> results = new List<int>();
+            for (int o = 0; o < matrix[i].Length; o++)
+                if (matrix[i][o] == maxValue)
+                    results.Add(o);
+            return results.ToArray();
+        }
+
     }
 }
