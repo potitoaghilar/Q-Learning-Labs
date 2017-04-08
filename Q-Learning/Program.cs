@@ -33,7 +33,7 @@ namespace Q_Learning
             // Draw lab
             game.drawLabWalls(x, y, width, height, Color.Black);
             // Spawn agent in random position inside Lab
-            game.createAgent(random.Next(x + 1, width - 1), random.Next(y + 1, height - 1), .4, true);
+            game.createAgent(random.Next(x + 1, width - 1), random.Next(y + 1, height - 1));
 
         }
     }
